@@ -8,8 +8,9 @@
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat&logo=vite)](https://vitejs.dev)
 [![Chart.js](https://img.shields.io/badge/Chart.js-4.5-FF6384?style=flat&logo=chart.js)](https://www.chartjs.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-black?style=flat&logo=vercel)](https://admetrics-eight.vercel.app)
 
-[Demo](#) • [Documentação](#documentação) • [Contribuir](CONTRIBUTING.md)
+[Demo ao Vivo](https://admetrics-eight.vercel.app) • [GitHub](https://github.com/batinera/admetrics) • [Documentação](#documentação) • [Contribuir](CONTRIBUTING.md)
 
 </div>
 
@@ -19,6 +20,7 @@
 
 - **🎨 Design Único**: Interface profissional com tipografia Sora + DM Sans, paleta dark sofisticada e animações suaves
 - **📊 Métricas Completas**: 9 cards principais + 3 gráficos interativos + tabela detalhada
+- **🔍 Filtros Avançados**: Período (1d-90d), date range picker customizado, multi-seleção de campanhas
 - **📈 Gráficos Interativos**: Linha, barras e rosca usando Chart.js com animações
 - **📱 Totalmente Responsivo**: Layout adaptável para desktop, tablet e mobile
 - **⚡ Performance**: Vue 3 + Vite para carregamento ultra-rápido (~110KB gzipped)
@@ -131,7 +133,7 @@ src/
 
 ### v1.2 - Funcionalidades
 
-- [ ] Filtros avançados (date range picker)
+- [x] Filtros avançados (date range picker)
 - [ ] Comparação entre períodos
 - [ ] Exportação em PDF
 - [ ] Alertas personalizados
