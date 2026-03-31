@@ -89,6 +89,19 @@ const handleMetricsChange = (newValue) => {
   emit('metrics-change', newValue);
 };
 
+const metricsListsEqual = (a, b) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
+
+watch(
+  () => props.visibleMetrics,
+  (next) => {
+    const copy = [...(next ?? [])];
+    if (!metricsListsEqual(copy, selectedMetrics.value)) {
+      selectedMetrics.value = copy;
+    }
+  },
+  { deep: true },
+);
+
 const handleRefresh = async () => {
   isRefreshing.value = true;
   emit('refresh');

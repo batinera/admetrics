@@ -37,7 +37,7 @@
             <span class="preset-name">Padrão</span>
             <span class="preset-meta">12 métricas</span>
           </div>
-          <button @click="applyPreset('default')" class="apply-btn">
+          <button type="button" @click="applyPreset('default')" class="preset-apply-text">
             Aplicar
           </button>
         </div>
@@ -53,7 +53,7 @@
             <span class="preset-meta">{{ preset.metrics.length }} métricas</span>
           </div>
           <div class="preset-actions">
-            <button @click="applyPreset(preset.id)" class="apply-btn" title="Aplicar preset">
+            <button type="button" @click="applyPreset(preset.id)" class="preset-icon-btn" title="Aplicar preset">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
@@ -191,6 +191,11 @@ const saveCurrentPreset = () => {
   }
   
   if (modalMode.value === 'save') {
+    if (!props.visibleMetrics?.length) {
+      errorMessage.value = 'Selecione pelo menos uma métrica para salvar';
+      return;
+    }
+
     const duplicate = presets.value.find(p => p.name.toLowerCase() === trimmedName.toLowerCase());
     if (duplicate) {
       errorMessage.value = 'Já existe uma visualização com este nome';
@@ -459,7 +464,32 @@ onUnmounted(() => {
   gap: 0.375rem;
 }
 
-.apply-btn,
+.preset-apply-text {
+  flex-shrink: 0;
+  padding: 0.5rem 0.875rem;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.preset-apply-text:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.preset-icon-btn,
 .edit-btn,
 .delete-btn {
   width: 32px;
@@ -475,7 +505,7 @@ onUnmounted(() => {
   transition: all var(--transition-fast);
 }
 
-.apply-btn:hover {
+.preset-icon-btn:hover {
   background: rgba(16, 185, 129, 0.1);
   border-color: #10b981;
   color: #10b981;

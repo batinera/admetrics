@@ -1,30 +1,32 @@
 <template>
   <article class="metric-card card" role="article" :aria-label="`${label}: ${formattedValue}`">
-    <button 
-      v-if="removable && metricId"
-      class="metric-card__remove-btn"
-      @click="emit('remove', metricId)"
-      aria-label="Remover métrica"
-      title="Remover métrica"
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </button>
-    
     <div class="metric-card__header">
       <div class="metric-card__icon" :style="{ background: iconGradient }" role="img" :aria-label="`Ícone de ${label}`">
         <component :is="iconComponent" />
       </div>
-      <div class="metric-card__change" :class="changeClass" role="status" :aria-label="`Variação de ${Math.abs(change)}%`">
-        <svg v-if="trend === 'up'" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 3L13 8L11.6 9.4L9 6.8V13H7V6.8L4.4 9.4L3 8L8 3Z" fill="currentColor"/>
-        </svg>
-        <svg v-if="trend === 'down'" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 13L3 8L4.4 6.6L7 9.2V3H9V9.2L11.6 6.6L13 8L8 13Z" fill="currentColor"/>
-        </svg>
-        <span>{{ Math.abs(change) }}%</span>
+      <div class="metric-card__header-actions">
+        <div class="metric-card__change" :class="changeClass" role="status" :aria-label="`Variação de ${Math.abs(change)}%`">
+          <svg v-if="trend === 'up'" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3L13 8L11.6 9.4L9 6.8V13H7V6.8L4.4 9.4L3 8L8 3Z" fill="currentColor"/>
+          </svg>
+          <svg v-if="trend === 'down'" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 13L3 8L4.4 6.6L7 9.2V3H9V9.2L11.6 6.6L13 8L8 13Z" fill="currentColor"/>
+          </svg>
+          <span>{{ Math.abs(change) }}%</span>
+        </div>
+        <button 
+          v-if="removable && metricId"
+          type="button"
+          class="metric-card__remove-btn"
+          @click="emit('remove', metricId)"
+          aria-label="Remover métrica"
+          title="Remover métrica"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </div>
     
@@ -225,6 +227,15 @@ const sparklineFillGradient = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.metric-card__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .metric-card__icon {
@@ -245,22 +256,19 @@ const sparklineFillGradient = computed(() => {
 }
 
 .metric-card__remove-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
   width: 28px;
   height: 28px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.35);
   border: none;
   border-radius: var(--radius-sm);
   color: var(--color-text-tertiary);
   cursor: pointer;
   opacity: 0;
   transition: all var(--transition-fast);
-  z-index: 10;
   backdrop-filter: blur(4px);
 }
 
@@ -271,7 +279,7 @@ const sparklineFillGradient = computed(() => {
 .metric-card__remove-btn:hover {
   background: rgba(239, 68, 68, 0.3);
   color: #ef4444;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .metric-card__remove-btn:active {
