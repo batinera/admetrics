@@ -61,7 +61,7 @@ const metrics = [
   { key: 'impressions', label: 'Impressões', color: '#8b5cf6' }
 ];
 
-const activeMetrics = ref(['results', 'reach']);
+const activeMetrics = ref(['results', 'reach', 'impressions']);
 
 const toggleMetric = (key) => {
   const index = activeMetrics.value.indexOf(key);
