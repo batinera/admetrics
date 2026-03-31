@@ -1,8 +1,5 @@
 <template>
   <div class="quick-stats">
-    <!-- #region agent log -->
-    <template v-if="false">{{ fetch('http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'29027b'},body:JSON.stringify({sessionId:'29027b',location:'QuickStats.vue:template-render',message:'QuickStats template rendering',data:{activeCampaigns:activeCampaigns,conversionRate:conversionRate,roi:roi},timestamp:Date.now(),runId:'initial',hypothesisId:'A,B,C'})}).catch(()=>{}) }}</template>
-    <!-- #endregion -->
     <div class="stat-item fade-in-up stagger-1">
       <div class="stat-icon stat-icon--primary">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -48,7 +45,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   activeCampaigns: {
@@ -69,33 +66,15 @@ const props = defineProps({
   }
 });
 
-// #region agent log
-onMounted(() => {
-  fetch('http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'29027b'},body:JSON.stringify({sessionId:'29027b',location:'QuickStats.vue:onMounted',message:'QuickStats mounted with props',data:{activeCampaigns:props.activeCampaigns,totalResults:props.totalResults,totalClicks:props.totalClicks,totalSpent:props.totalSpent,propsType:{activeCampaigns:typeof props.activeCampaigns,totalResults:typeof props.totalResults,totalClicks:typeof props.totalClicks,totalSpent:typeof props.totalSpent}},timestamp:Date.now(),runId:'initial',hypothesisId:'A,B'})}).catch(()=>{});
-});
-// #endregion
-
 const conversionRate = computed(() => {
-  // #region agent log
-  const result = (() => {
-    if (props.totalClicks === 0) return 0;
-    return ((props.totalResults / props.totalClicks) * 100).toFixed(1);
-  })();
-  fetch('http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'29027b'},body:JSON.stringify({sessionId:'29027b',location:'QuickStats.vue:conversionRate',message:'Conversion rate computed',data:{totalResults:props.totalResults,totalClicks:props.totalClicks,result:result,isNaN:isNaN(result),isFinite:isFinite(result)},timestamp:Date.now(),runId:'initial',hypothesisId:'A'})}).catch(()=>{});
-  return result;
-  // #endregion
+  if (props.totalClicks === 0) return 0;
+  return ((props.totalResults / props.totalClicks) * 100).toFixed(1);
 });
 
 const roi = computed(() => {
-  // #region agent log
   const estimatedRevenue = props.totalResults * 50;
-  const result = (() => {
-    if (props.totalSpent === 0) return 0;
-    return (((estimatedRevenue - props.totalSpent) / props.totalSpent) * 100).toFixed(0);
-  })();
-  fetch('http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'29027b'},body:JSON.stringify({sessionId:'29027b',location:'QuickStats.vue:roi',message:'ROI computed',data:{totalResults:props.totalResults,totalSpent:props.totalSpent,estimatedRevenue:estimatedRevenue,result:result,isNaN:isNaN(result),isFinite:isFinite(result)},timestamp:Date.now(),runId:'initial',hypothesisId:'A'})}).catch(()=>{});
-  return result;
-  // #endregion
+  if (props.totalSpent === 0) return 0;
+  return (((estimatedRevenue - props.totalSpent) / props.totalSpent) * 100).toFixed(0);
 });
 </script>
 

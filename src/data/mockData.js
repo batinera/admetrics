@@ -118,28 +118,6 @@ export const mockCampaigns = campaigns.map(calculateCampaignTotals);
 export const getOverallMetrics = () => {
   const activeCampaigns = mockCampaigns.filter((c) => c.status === "active");
 
-  // #region agent log
-  fetch("http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "29027b",
-    },
-    body: JSON.stringify({
-      sessionId: "29027b",
-      location: "mockData.js:getOverallMetrics-start",
-      message: "getOverallMetrics called",
-      data: {
-        activeCampaignsCount: activeCampaigns.length,
-        totalCampaigns: mockCampaigns.length,
-      },
-      timestamp: Date.now(),
-      runId: "initial",
-      hypothesisId: "B",
-    }),
-  }).catch(() => {});
-  // #endregion
-
   const overall = activeCampaigns.reduce(
     (acc, campaign) => ({
       results: acc.results + campaign.totals.results,
@@ -216,35 +194,6 @@ export const getOverallMetrics = () => {
     },
     activeCampaigns: activeCampaigns.length,
   };
-
-  // #region agent log
-  fetch("http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "29027b",
-    },
-    body: JSON.stringify({
-      sessionId: "29027b",
-      location: "mockData.js:getOverallMetrics-return",
-      message: "getOverallMetrics returning",
-      data: {
-        activeCampaigns: metricsResult.activeCampaigns,
-        resultsValue: metricsResult.results.value,
-        clicksValue: metricsResult.clicks.value,
-        spendValue: metricsResult.spend.value,
-        hasAllKeys: !!(
-          metricsResult.results &&
-          metricsResult.clicks &&
-          metricsResult.spend
-        ),
-      },
-      timestamp: Date.now(),
-      runId: "initial",
-      hypothesisId: "B",
-    }),
-  }).catch(() => {});
-  // #endregion
 
   return metricsResult;
 };
