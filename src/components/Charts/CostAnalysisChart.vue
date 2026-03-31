@@ -154,33 +154,64 @@ const chartOptions = {
 
 <style scoped>
 .chart-container {
-  min-height: 400px;
+  min-height: 350px;
 }
 
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
 }
 
 .chart-header h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .period-label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--color-text-secondary);
-  padding: 0.5rem 1rem;
+  padding: 0.375rem 0.875rem;
   background: var(--color-surface-elevated);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
 }
 
 .chart-wrapper {
-  height: 320px;
+  height: 280px;
   position: relative;
+}
+
+@media (max-width: 900px) {
+  .chart-container {
+    min-height: 320px;
+  }
+  
+  .chart-wrapper {
+    height: 250px;
+  }
+}
+
+@media (max-width: 600px) {
+  .chart-container {
+    min-height: 280px;
+  }
+  
+  .chart-wrapper {
+    height: 220px;
+  }
+  
+  .chart-header h3 {
+    font-size: 1rem;
+  }
+  
+  .period-label {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+  }
 }
 </style>

@@ -188,18 +188,61 @@ const handleExport = (format) => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .dashboard-header {
-    padding: var(--spacing-md);
-  }
-  
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
+    padding: var(--spacing-md) var(--spacing-lg);
   }
   
   .header-right {
-    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 900px) {
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+  }
+  
+  .header-right {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+  
+  .logo-text h1 {
+    font-size: 1.25rem;
+  }
+  
+  .subtitle {
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .logo-section {
+    gap: var(--spacing-sm);
+  }
+  
+  .logo svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .logo-text h1 {
+    font-size: 1.125rem;
+  }
+  
+  .refresh-btn span {
+    display: none;
+  }
+  
+  .refresh-btn {
+    padding: 0.625rem;
   }
 }
 </style>

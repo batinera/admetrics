@@ -101,8 +101,8 @@ const roi = computed(() => {
 }
 
 .stat-icon {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -145,7 +145,7 @@ const roi = computed(() => {
 }
 
 .stat-value {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   font-family: var(--font-display);
   color: var(--color-text-primary);
@@ -154,13 +154,15 @@ const roi = computed(() => {
 
 .stat-divider {
   width: 1px;
-  height: 44px;
+  height: 36px;
   background: var(--color-border);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .quick-stats {
     flex-wrap: wrap;
+    padding: var(--spacing-md) var(--spacing-lg);
+    gap: var(--spacing-md);
   }
   
   .stat-divider {
@@ -168,21 +170,44 @@ const roi = computed(() => {
   }
   
   .stat-item {
-    min-width: calc(50% - var(--spacing-lg) / 2);
+    min-width: calc(50% - var(--spacing-md) / 2);
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .stat-value {
+    font-size: 1.375rem;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .quick-stats {
     flex-direction: column;
     padding: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
   
   .stat-item {
     width: 100%;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--color-surface-elevated);
     border-radius: var(--radius-md);
+  }
+  
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
   }
 }
 </style>

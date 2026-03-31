@@ -187,8 +187,8 @@ const sparklineFillGradient = computed(() => {
 .metric-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
-  min-height: 180px;
+  gap: var(--spacing-sm);
+  min-height: 140px;
   position: relative;
   background: var(--color-surface);
   cursor: pointer;
@@ -205,8 +205,8 @@ const sparklineFillGradient = computed(() => {
 }
 
 .metric-card__icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -222,8 +222,8 @@ const sparklineFillGradient = computed(() => {
 }
 
 .metric-card__icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: white;
 }
 
@@ -257,7 +257,7 @@ const sparklineFillGradient = computed(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .metric-card__label {
@@ -270,7 +270,7 @@ const sparklineFillGradient = computed(() => {
 }
 
 .metric-card__value {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 800;
   font-family: var(--font-display);
   color: var(--color-text-primary);

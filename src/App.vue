@@ -288,7 +288,6 @@ const metricCards = computed(() => {
   gap: var(--spacing-lg);
 }
 
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity var(--transition-slow);
@@ -299,9 +298,23 @@ const metricCards = computed(() => {
   opacity: 0;
 }
 
-@media (max-width: 1400px) {
+@media (min-width: 1600px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 900px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
   }
   
   .charts-row {
@@ -309,17 +322,24 @@ const metricCards = computed(() => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
   }
   
   .dashboard-main {
     padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-xl);
+  }
+  
+  .charts-grid {
+    gap: var(--spacing-md);
   }
   
   .charts-row {
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
   }
 }
 </style>

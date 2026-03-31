@@ -13,7 +13,13 @@ html {
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
   html {
     font-size: 14px;
   }
@@ -88,7 +94,21 @@ h4 {
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.625rem;
+  }
+  
+  h3 {
+    font-size: 1.375rem;
+  }
+}
+
+@media (max-width: 600px) {
   h1 {
     font-size: 1.75rem;
   }
@@ -98,7 +118,11 @@ h4 {
   }
   
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
+  }
+  
+  h4 {
+    font-size: 1rem;
   }
 }
 
@@ -144,16 +168,29 @@ a:hover {
 }
 
 .container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: var(--spacing-xl);
   position: relative;
   z-index: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 900px) {
   .container {
     padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: var(--spacing-sm) var(--spacing-md);
   }
 }
 
@@ -161,7 +198,7 @@ a:hover {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
