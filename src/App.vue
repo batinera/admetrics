@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import QuickStats from './components/QuickStats.vue';
@@ -27,6 +27,11 @@ const {
   totalBudget,
   totalSpent
 } = useMetrics();
+
+const STORAGE_KEY = 'admetrics_visible_metrics';
+const DEFAULT_VISIBLE_METRICS = ['results', 'reach', 'frequency', 'costPerResult', 'budget', 'spend', 'impressions', 'cpm', 'clicks', 'cpc', 'ctr', 'engagement'];
+
+const visibleMetrics = ref([...DEFAULT_VISIBLE_METRICS]);
 
 const handleRefresh = () => {
   refreshData();
@@ -94,16 +99,48 @@ const downloadFile = (content, filename, mimeType) => {
   URL.revokeObjectURL(url);
 };
 
+const handleMetricsChange = (selectedMetrics) => {
+  visibleMetrics.value = selectedMetrics;
+};
+
+const loadVisibleMetrics = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        visibleMetrics.value = parsed;
+      }
+    }
+  } catch (e) {
+    console.error('Error loading visible metrics from localStorage:', e);
+  }
+};
+
+const saveVisibleMetrics = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleMetrics.value));
+  } catch (e) {
+    console.error('Error saving visible metrics to localStorage:', e);
+  }
+};
+
+watch(visibleMetrics, () => {
+  saveVisibleMetrics();
+}, { deep: true });
+
 onMounted(() => {
   console.log('App mounted, loading data...');
+  loadVisibleMetrics();
   loadData();
 });
 
-const metricCards = computed(() => {
+const allMetricCards = computed(() => {
   if (!metrics.value) return [];
   
   return [
     {
+      id: 'results',
       label: 'Resultados',
       value: metrics.value.results.value,
       change: metrics.value.results.change,
@@ -113,6 +150,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.results)
     },
     {
+      id: 'reach',
       label: 'Alcance',
       value: metrics.value.reach.value,
       change: metrics.value.reach.change,
@@ -122,6 +160,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.reach)
     },
     {
+      id: 'frequency',
       label: 'Frequência',
       value: metrics.value.frequency.value,
       change: metrics.value.frequency.change,
@@ -131,6 +170,7 @@ const metricCards = computed(() => {
       subtitle: 'vezes por pessoa'
     },
     {
+      id: 'costPerResult',
       label: 'Custo por Resultado',
       value: metrics.value.costPerResult.value,
       change: metrics.value.costPerResult.change,
@@ -140,6 +180,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.costPerResult)
     },
     {
+      id: 'budget',
       label: 'Orçamento Total',
       value: metrics.value.budget.value,
       change: 0,
@@ -149,6 +190,7 @@ const metricCards = computed(() => {
       subtitle: `${metrics.value.activeCampaigns} campanhas ativas`
     },
     {
+      id: 'spend',
       label: 'Valor Gasto',
       value: metrics.value.spend.value,
       change: metrics.value.spend.change,
@@ -158,6 +200,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.spend)
     },
     {
+      id: 'impressions',
       label: 'Impressões',
       value: metrics.value.impressions.value,
       change: metrics.value.impressions.change,
@@ -167,6 +210,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.impressions)
     },
     {
+      id: 'cpm',
       label: 'CPM',
       value: metrics.value.cpm.value,
       change: metrics.value.cpm.change,
@@ -177,6 +221,7 @@ const metricCards = computed(() => {
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.cpm)
     },
     {
+      id: 'clicks',
       label: 'Cliques no Link',
       value: metrics.value.clicks.value,
       change: metrics.value.clicks.change,
@@ -184,8 +229,43 @@ const metricCards = computed(() => {
       icon: 'click',
       format: 'number',
       sparklineData: timeSeriesData.value.slice(-14).map(d => d.clicks)
+    },
+    {
+      id: 'cpc',
+      label: 'CPC',
+      value: metrics.value.cpc.value,
+      change: metrics.value.cpc.change,
+      trend: metrics.value.cpc.change < 0 ? 'up' : 'down',
+      icon: 'dollar',
+      format: 'currency',
+      subtitle: 'custo por clique',
+      sparklineData: timeSeriesData.value.slice(-14).map(d => d.cpc)
+    },
+    {
+      id: 'ctr',
+      label: 'CTR',
+      value: metrics.value.ctr.value,
+      change: metrics.value.ctr.change,
+      trend: metrics.value.ctr.change > 0 ? 'up' : 'down',
+      icon: 'click',
+      format: 'percent',
+      subtitle: 'taxa de cliques'
+    },
+    {
+      id: 'engagement',
+      label: 'Engajamento',
+      value: metrics.value.engagement.value,
+      change: metrics.value.engagement.change,
+      trend: metrics.value.engagement.change > 0 ? 'up' : 'down',
+      icon: 'target',
+      format: 'percent',
+      subtitle: 'taxa de conversão'
     }
   ];
+});
+
+const metricCards = computed(() => {
+  return allMetricCards.value.filter(card => visibleMetrics.value.includes(card.id));
 });
 </script>
 
@@ -196,8 +276,10 @@ const metricCards = computed(() => {
       @period-change="handlePeriodChange" 
       @campaigns-change="handleCampaignsChange"
       @daterange-change="handleDateRangeChange"
+      @metrics-change="handleMetricsChange"
       @export="handleExport"
       :all-campaigns="allCampaigns"
+      :visible-metrics="visibleMetrics"
     />
     
     <main class="dashboard-main">

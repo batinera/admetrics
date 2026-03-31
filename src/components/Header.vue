@@ -23,6 +23,7 @@
       </div>
       
       <div class="header-right">
+        <MetricsFilter v-model="selectedMetrics" />
         <CampaignFilter v-model="selectedCampaigns" :campaigns="allCampaigns" />
         <DateRangePicker v-model="dateRange" />
         <PeriodSelector v-model="selectedPeriod" />
@@ -44,20 +45,26 @@ import PeriodSelector from './PeriodSelector.vue';
 import ExportButton from './ExportButton.vue';
 import CampaignFilter from './CampaignFilter.vue';
 import DateRangePicker from './DateRangePicker.vue';
+import MetricsFilter from './MetricsFilter.vue';
 import IconRefresh from './IconRefresh.vue';
 
 const props = defineProps({
   allCampaigns: {
     type: Array,
     default: () => []
+  },
+  visibleMetrics: {
+    type: Array,
+    default: () => []
   }
 });
 
-const emit = defineEmits(['period-change', 'refresh', 'export', 'campaigns-change', 'daterange-change']);
+const emit = defineEmits(['period-change', 'refresh', 'export', 'campaigns-change', 'daterange-change', 'metrics-change']);
 
 const selectedPeriod = ref('30');
 const selectedCampaigns = ref([]);
 const dateRange = ref(null);
+const selectedMetrics = ref([...props.visibleMetrics]);
 const isRefreshing = ref(false);
 
 watch(selectedPeriod, (newValue) => {
@@ -71,6 +78,14 @@ watch(selectedCampaigns, (newValue) => {
 watch(dateRange, (newValue) => {
   emit('daterange-change', newValue);
 });
+
+watch(selectedMetrics, (newValue) => {
+  emit('metrics-change', newValue);
+});
+
+watch(() => props.visibleMetrics, (newValue) => {
+  selectedMetrics.value = [...newValue];
+}, { deep: true });
 
 const handleRefresh = async () => {
   isRefreshing.value = true;

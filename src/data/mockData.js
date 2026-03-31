@@ -12,6 +12,10 @@ const generateDailyData = (days = 30) => {
     const baseClicks = baseResults * (1.2 + Math.random() * 0.5);
     const baseSpend = 200 + Math.random() * 150;
 
+    const cpc = baseSpend / baseClicks;
+    const ctr = (baseClicks / baseImpressions) * 100;
+    const engagement = (baseResults / baseClicks) * 100;
+
     data.push({
       date: format(date, "yyyy-MM-dd"),
       results: Math.round(baseResults),
@@ -22,6 +26,9 @@ const generateDailyData = (days = 30) => {
       cpm: parseFloat(((baseSpend / baseImpressions) * 1000).toFixed(2)),
       costPerResult: parseFloat((baseSpend / baseResults).toFixed(2)),
       frequency: parseFloat((baseImpressions / baseReach).toFixed(2)),
+      cpc: parseFloat(cpc.toFixed(2)),
+      ctr: parseFloat(ctr.toFixed(2)),
+      engagement: parseFloat(engagement.toFixed(1)),
     });
   }
 
@@ -192,6 +199,21 @@ export const getOverallMetrics = () => {
       change: 22.1,
       trend: "up",
     },
+    cpc: {
+      value: parseFloat((overall.spend / overall.clicks).toFixed(2)),
+      change: -5.4,
+      trend: "down",
+    },
+    ctr: {
+      value: parseFloat(((overall.clicks / overall.impressions) * 100).toFixed(2)),
+      change: 3.8,
+      trend: "up",
+    },
+    engagement: {
+      value: parseFloat(((overall.results / overall.clicks) * 100).toFixed(1)),
+      change: 2.1,
+      trend: "up",
+    },
     activeCampaigns: activeCampaigns.length,
   };
 
@@ -232,6 +254,9 @@ export const getTimeSeriesData = (metric = "results", days = 30) => {
   sortedData.forEach((day) => {
     day.cpm = parseFloat(((day.spend / day.impressions) * 1000).toFixed(2));
     day.costPerResult = parseFloat((day.spend / day.results).toFixed(2));
+    day.cpc = parseFloat((day.spend / day.clicks).toFixed(2));
+    day.ctr = parseFloat(((day.clicks / day.impressions) * 100).toFixed(2));
+    day.engagement = parseFloat(((day.results / day.clicks) * 100).toFixed(1));
   });
 
   return sortedData;
@@ -361,6 +386,21 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
     clicks: {
       value: totals.clicks,
       change: 22.1,
+      trend: "up",
+    },
+    cpc: {
+      value: parseFloat((totals.spend / totals.clicks).toFixed(2)),
+      change: -5.4,
+      trend: "down",
+    },
+    ctr: {
+      value: parseFloat(((totals.clicks / totals.impressions) * 100).toFixed(2)),
+      change: 3.8,
+      trend: "up",
+    },
+    engagement: {
+      value: parseFloat(((totals.results / totals.clicks) * 100).toFixed(1)),
+      change: 2.1,
       trend: "up",
     },
     activeCampaigns: filteredCampaigns.filter((c) => c.status === "active")
