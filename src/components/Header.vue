@@ -23,6 +23,10 @@
       </div>
       
       <div class="header-right">
+        <MetricsPresetManager 
+          :visible-metrics="selectedMetrics"
+          @preset-applied="handleMetricsChange"
+        />
         <MetricsFilter :model-value="selectedMetrics" @update:model-value="handleMetricsChange" />
         <CampaignFilter v-model="selectedCampaigns" :campaigns="allCampaigns" />
         <DateRangePicker v-model="dateRange" />
@@ -46,6 +50,7 @@ import ExportButton from './ExportButton.vue';
 import CampaignFilter from './CampaignFilter.vue';
 import DateRangePicker from './DateRangePicker.vue';
 import MetricsFilter from './MetricsFilter.vue';
+import MetricsPresetManager from './MetricsPresetManager.vue';
 import IconRefresh from './IconRefresh.vue';
 
 const props = defineProps({

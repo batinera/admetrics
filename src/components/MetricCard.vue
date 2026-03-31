@@ -1,5 +1,18 @@
 <template>
   <article class="metric-card card" role="article" :aria-label="`${label}: ${formattedValue}`">
+    <button 
+      v-if="removable && metricId"
+      class="metric-card__remove-btn"
+      @click="emit('remove', metricId)"
+      aria-label="Remover métrica"
+      title="Remover métrica"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
     <div class="metric-card__header">
       <div class="metric-card__icon" :style="{ background: iconGradient }" role="img" :aria-label="`Ícone de ${label}`">
         <component :is="iconComponent" />
@@ -88,8 +101,18 @@ const props = defineProps({
   sparklineData: {
     type: Array,
     default: null
+  },
+  metricId: {
+    type: String,
+    default: ''
+  },
+  removable: {
+    type: Boolean,
+    default: true
   }
 });
+
+const emit = defineEmits(['remove']);
 
 const iconComponent = computed(() => {
   const icons = {
@@ -219,6 +242,40 @@ const sparklineFillGradient = computed(() => {
 .metric-card:hover .metric-card__icon {
   transform: scale(1.05) rotate(2deg);
   box-shadow: var(--shadow-lg);
+}
+
+.metric-card__remove-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  opacity: 0;
+  transition: all var(--transition-fast);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.metric-card:hover .metric-card__remove-btn {
+  opacity: 1;
+}
+
+.metric-card__remove-btn:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.metric-card__remove-btn:active {
+  transform: scale(0.95);
 }
 
 .metric-card__icon svg {

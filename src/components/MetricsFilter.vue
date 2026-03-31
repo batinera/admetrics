@@ -133,6 +133,12 @@ const handleClickOutside = (event) => {
   }
 };
 
+watch(() => props.modelValue, (newValue) => {
+  if (JSON.stringify(newValue) !== JSON.stringify(selectedMetricsLocal.value)) {
+    selectedMetricsLocal.value = [...newValue];
+  }
+}, { immediate: true });
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
 });

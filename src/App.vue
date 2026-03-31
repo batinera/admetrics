@@ -108,6 +108,11 @@ const handleMetricsChange = (selectedMetrics) => {
   }
 };
 
+const handleRemoveMetric = (metricId) => {
+  const newMetrics = visibleMetrics.value.filter(id => id !== metricId);
+  handleMetricsChange(newMetrics);
+};
+
 const loadVisibleMetrics = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -293,6 +298,8 @@ const metricCards = computed(() => {
             <MetricCard
               v-for="(metric, index) in metricCards"
               :key="metric.label"
+              :metric-id="metric.id"
+              :removable="true"
               :label="metric.label"
               :value="metric.value"
               :change="metric.change"
@@ -301,6 +308,7 @@ const metricCards = computed(() => {
               :format="metric.format"
               :subtitle="metric.subtitle"
               :sparkline-data="metric.sparklineData"
+              @remove="handleRemoveMetric"
             />
           </div>
           
