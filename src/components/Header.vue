@@ -23,11 +23,6 @@
       </div>
       
       <div class="header-right">
-        <MetricsPresetManager 
-          :visible-metrics="selectedMetrics"
-          @preset-applied="handleMetricsChange"
-        />
-        <MetricsFilter :model-value="selectedMetrics" @update:model-value="handleMetricsChange" />
         <CampaignFilter v-model="selectedCampaigns" :campaigns="allCampaigns" />
         <DateRangePicker v-model="dateRange" />
         <PeriodSelector v-model="selectedPeriod" />
@@ -49,27 +44,20 @@ import PeriodSelector from './PeriodSelector.vue';
 import ExportButton from './ExportButton.vue';
 import CampaignFilter from './CampaignFilter.vue';
 import DateRangePicker from './DateRangePicker.vue';
-import MetricsFilter from './MetricsFilter.vue';
-import MetricsPresetManager from './MetricsPresetManager.vue';
 import IconRefresh from './IconRefresh.vue';
 
-const props = defineProps({
+defineProps({
   allCampaigns: {
-    type: Array,
-    default: () => []
-  },
-  visibleMetrics: {
     type: Array,
     default: () => []
   }
 });
 
-const emit = defineEmits(['period-change', 'refresh', 'export', 'campaigns-change', 'daterange-change', 'metrics-change']);
+const emit = defineEmits(['period-change', 'refresh', 'export', 'campaigns-change', 'daterange-change']);
 
 const selectedPeriod = ref('30');
 const selectedCampaigns = ref([]);
 const dateRange = ref(null);
-const selectedMetrics = ref([...props.visibleMetrics]);
 const isRefreshing = ref(false);
 
 watch(selectedPeriod, (newValue) => {
@@ -83,24 +71,6 @@ watch(selectedCampaigns, (newValue) => {
 watch(dateRange, (newValue) => {
   emit('daterange-change', newValue);
 });
-
-const handleMetricsChange = (newValue) => {
-  selectedMetrics.value = newValue;
-  emit('metrics-change', newValue);
-};
-
-const metricsListsEqual = (a, b) => JSON.stringify(a ?? []) === JSON.stringify(b ?? []);
-
-watch(
-  () => props.visibleMetrics,
-  (next) => {
-    const copy = [...(next ?? [])];
-    if (!metricsListsEqual(copy, selectedMetrics.value)) {
-      selectedMetrics.value = copy;
-    }
-  },
-  { deep: true },
-);
 
 const handleRefresh = async () => {
   isRefreshing.value = true;

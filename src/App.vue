@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted } from 'vue';
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import QuickStats from './components/QuickStats.vue';
@@ -27,12 +27,6 @@ const {
   totalBudget,
   totalSpent
 } = useMetrics();
-
-const STORAGE_KEY = 'admetrics_visible_metrics';
-const DEFAULT_VISIBLE_METRICS = ['results', 'reach', 'frequency', 'costPerResult', 'budget', 'spend', 'impressions', 'cpm', 'clicks', 'cpc', 'ctr', 'engagement'];
-
-const visibleMetrics = ref([...DEFAULT_VISIBLE_METRICS]);
-
 const handleRefresh = () => {
   refreshData();
 };
@@ -98,42 +92,12 @@ const downloadFile = (content, filename, mimeType) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
-
-const handleMetricsChange = (selectedMetrics) => {
-  visibleMetrics.value = selectedMetrics;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedMetrics));
-  } catch (e) {
-    console.error('Error saving visible metrics to localStorage:', e);
-  }
-};
-
-const handleRemoveMetric = (metricId) => {
-  const newMetrics = visibleMetrics.value.filter(id => id !== metricId);
-  handleMetricsChange(newMetrics);
-};
-
-const loadVisibleMetrics = () => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        visibleMetrics.value = parsed;
-      }
-    }
-  } catch (e) {
-    console.error('Error loading visible metrics from localStorage:', e);
-  }
-};
-
 onMounted(() => {
   console.log('App mounted, loading data...');
-  loadVisibleMetrics();
   loadData();
 });
 
-const allMetricCards = computed(() => {
+const metricCards = computed(() => {
   if (!metrics.value) return [];
   
   return [
@@ -261,10 +225,6 @@ const allMetricCards = computed(() => {
     }
   ];
 });
-
-const metricCards = computed(() => {
-  return allMetricCards.value.filter(card => visibleMetrics.value.includes(card.id));
-});
 </script>
 
 <template>
@@ -274,10 +234,8 @@ const metricCards = computed(() => {
       @period-change="handlePeriodChange" 
       @campaigns-change="handleCampaignsChange"
       @daterange-change="handleDateRangeChange"
-      @metrics-change="handleMetricsChange"
       @export="handleExport"
       :all-campaigns="allCampaigns"
-      :visible-metrics="visibleMetrics"
     />
     
     <main class="dashboard-main">
@@ -296,10 +254,8 @@ const metricCards = computed(() => {
           
           <div class="dashboard-grid">
             <MetricCard
-              v-for="(metric, index) in metricCards"
+              v-for="metric in metricCards"
               :key="metric.label"
-              :metric-id="metric.id"
-              :removable="true"
               :label="metric.label"
               :value="metric.value"
               :change="metric.change"
@@ -308,7 +264,6 @@ const metricCards = computed(() => {
               :format="metric.format"
               :subtitle="metric.subtitle"
               :sparkline-data="metric.sparklineData"
-              @remove="handleRemoveMetric"
             />
           </div>
           
