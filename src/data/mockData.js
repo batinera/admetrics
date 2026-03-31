@@ -266,6 +266,8 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
           impressions: 0,
           clicks: 0,
           spend: 0,
+          cpm: 0,
+          costPerResult: 0,
         };
       }
       allDailyData[day.date].results += day.results;
