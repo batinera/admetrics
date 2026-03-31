@@ -207,6 +207,9 @@ const metricCards = computed(() => {
         <ErrorState v-else-if="error" :message="error" @retry="loadData" />
         
         <div v-else-if="metrics">
+          <!-- #region agent log -->
+          <template v-if="false">{{ fetch('http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'29027b'},body:JSON.stringify({sessionId:'29027b',location:'App.vue:210',message:'QuickStats render - metrics available',data:{activeCampaigns:metrics.activeCampaigns,totalResults:metrics.results?.value,totalClicks:metrics.clicks?.value,totalSpent:metrics.spend?.value,metricsKeys:Object.keys(metrics)},timestamp:Date.now(),runId:'initial',hypothesisId:'A,B'})}).catch(()=>{}) }}</template>
+          <!-- #endregion -->
           <QuickStats 
             :active-campaigns="metrics.activeCampaigns"
             :total-results="metrics.results.value"

@@ -118,6 +118,28 @@ export const mockCampaigns = campaigns.map(calculateCampaignTotals);
 export const getOverallMetrics = () => {
   const activeCampaigns = mockCampaigns.filter((c) => c.status === "active");
 
+  // #region agent log
+  fetch("http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Debug-Session-Id": "29027b",
+    },
+    body: JSON.stringify({
+      sessionId: "29027b",
+      location: "mockData.js:getOverallMetrics-start",
+      message: "getOverallMetrics called",
+      data: {
+        activeCampaignsCount: activeCampaigns.length,
+        totalCampaigns: mockCampaigns.length,
+      },
+      timestamp: Date.now(),
+      runId: "initial",
+      hypothesisId: "B",
+    }),
+  }).catch(() => {});
+  // #endregion
+
   const overall = activeCampaigns.reduce(
     (acc, campaign) => ({
       results: acc.results + campaign.totals.results,
@@ -132,7 +154,7 @@ export const getOverallMetrics = () => {
 
   const previousPeriodMultiplier = 0.85;
 
-  return {
+  const metricsResult = {
     results: {
       value: overall.results,
       change: parseFloat(
@@ -194,6 +216,37 @@ export const getOverallMetrics = () => {
     },
     activeCampaigns: activeCampaigns.length,
   };
+
+  // #region agent log
+  fetch("http://127.0.0.1:7337/ingest/25b36a14-8e5f-4b32-9168-eb48b1e02f7b", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Debug-Session-Id": "29027b",
+    },
+    body: JSON.stringify({
+      sessionId: "29027b",
+      location: "mockData.js:getOverallMetrics-return",
+      message: "getOverallMetrics returning",
+      data: {
+        activeCampaigns: metricsResult.activeCampaigns,
+        resultsValue: metricsResult.results.value,
+        clicksValue: metricsResult.clicks.value,
+        spendValue: metricsResult.spend.value,
+        hasAllKeys: !!(
+          metricsResult.results &&
+          metricsResult.clicks &&
+          metricsResult.spend
+        ),
+      },
+      timestamp: Date.now(),
+      runId: "initial",
+      hypothesisId: "B",
+    }),
+  }).catch(() => {});
+  // #endregion
+
+  return metricsResult;
 };
 
 export const getTimeSeriesData = (metric = "results", days = 30) => {
@@ -237,25 +290,25 @@ export const getTimeSeriesData = (metric = "results", days = 30) => {
 
 export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
   let filteredCampaigns = mockCampaigns;
-  
+
   if (campaignIds.length > 0) {
-    filteredCampaigns = mockCampaigns.filter(c => campaignIds.includes(c.id));
+    filteredCampaigns = mockCampaigns.filter((c) => campaignIds.includes(c.id));
   }
-  
+
   const allDailyData = {};
-  
+
   filteredCampaigns.forEach((campaign) => {
     campaign.dailyData.forEach((day) => {
       if (dateRange) {
         const dayDate = new Date(day.date);
         const startDate = new Date(dateRange.start);
         const endDate = new Date(dateRange.end);
-        
+
         if (dayDate < startDate || dayDate > endDate) {
           return;
         }
       }
-      
+
       if (!allDailyData[day.date]) {
         allDailyData[day.date] = {
           date: day.date,
@@ -273,10 +326,11 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
       allDailyData[day.date].spend += day.spend;
     });
   });
-  
-  const sortedData = Object.values(allDailyData)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
-  
+
+  const sortedData = Object.values(allDailyData).sort(
+    (a, b) => new Date(a.date) - new Date(b.date),
+  );
+
   const totals = sortedData.reduce(
     (acc, day) => ({
       results: acc.results + day.results,
@@ -286,23 +340,38 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
       spend: acc.spend + day.spend,
       budget: acc.budget,
     }),
-    { results: 0, reach: 0, impressions: 0, clicks: 0, spend: 0, budget: filteredCampaigns.reduce((sum, c) => sum + c.budget, 0) }
+    {
+      results: 0,
+      reach: 0,
+      impressions: 0,
+      clicks: 0,
+      spend: 0,
+      budget: filteredCampaigns.reduce((sum, c) => sum + c.budget, 0),
+    },
   );
-  
+
   const previousPeriodMultiplier = 0.85;
-  
+
   return {
     results: {
       value: totals.results,
       change: parseFloat(
-        (((totals.results - totals.results * previousPeriodMultiplier) / (totals.results * previousPeriodMultiplier)) * 100).toFixed(1)
+        (
+          ((totals.results - totals.results * previousPeriodMultiplier) /
+            (totals.results * previousPeriodMultiplier)) *
+          100
+        ).toFixed(1),
       ),
       trend: "up",
     },
     reach: {
       value: totals.reach,
       change: parseFloat(
-        (((totals.reach - totals.reach * previousPeriodMultiplier) / (totals.reach * previousPeriodMultiplier)) * 100).toFixed(1)
+        (
+          ((totals.reach - totals.reach * previousPeriodMultiplier) /
+            (totals.reach * previousPeriodMultiplier)) *
+          100
+        ).toFixed(1),
       ),
       trend: "up",
     },
@@ -332,7 +401,9 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
       trend: "up",
     },
     cpm: {
-      value: parseFloat(((totals.spend / totals.impressions) * 1000).toFixed(2)),
+      value: parseFloat(
+        ((totals.spend / totals.impressions) * 1000).toFixed(2),
+      ),
       change: -3.2,
       trend: "down",
     },
@@ -341,7 +412,8 @@ export const getMetricsForCampaigns = (campaignIds = [], dateRange = null) => {
       change: 22.1,
       trend: "up",
     },
-    activeCampaigns: filteredCampaigns.filter(c => c.status === 'active').length,
+    activeCampaigns: filteredCampaigns.filter((c) => c.status === "active")
+      .length,
     timeSeriesData: sortedData,
     campaigns: filteredCampaigns,
   };
