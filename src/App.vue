@@ -101,6 +101,11 @@ const downloadFile = (content, filename, mimeType) => {
 
 const handleMetricsChange = (selectedMetrics) => {
   visibleMetrics.value = selectedMetrics;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedMetrics));
+  } catch (e) {
+    console.error('Error saving visible metrics to localStorage:', e);
+  }
 };
 
 const loadVisibleMetrics = () => {
@@ -116,18 +121,6 @@ const loadVisibleMetrics = () => {
     console.error('Error loading visible metrics from localStorage:', e);
   }
 };
-
-const saveVisibleMetrics = () => {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(visibleMetrics.value));
-  } catch (e) {
-    console.error('Error saving visible metrics to localStorage:', e);
-  }
-};
-
-watch(visibleMetrics, () => {
-  saveVisibleMetrics();
-}, { deep: true });
 
 onMounted(() => {
   console.log('App mounted, loading data...');

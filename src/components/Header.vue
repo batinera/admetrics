@@ -23,7 +23,7 @@
       </div>
       
       <div class="header-right">
-        <MetricsFilter v-model="selectedMetrics" />
+        <MetricsFilter :model-value="selectedMetrics" @update:model-value="handleMetricsChange" />
         <CampaignFilter v-model="selectedCampaigns" :campaigns="allCampaigns" />
         <DateRangePicker v-model="dateRange" />
         <PeriodSelector v-model="selectedPeriod" />
@@ -79,13 +79,10 @@ watch(dateRange, (newValue) => {
   emit('daterange-change', newValue);
 });
 
-watch(selectedMetrics, (newValue) => {
+const handleMetricsChange = (newValue) => {
+  selectedMetrics.value = newValue;
   emit('metrics-change', newValue);
-});
-
-watch(() => props.visibleMetrics, (newValue) => {
-  selectedMetrics.value = [...newValue];
-}, { deep: true });
+};
 
 const handleRefresh = async () => {
   isRefreshing.value = true;
