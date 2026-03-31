@@ -1,6 +1,6 @@
 <template>
   <div class="quick-stats">
-    <div class="stat-item fade-in-up stagger-1">
+    <div class="stat-item">
       <div class="stat-icon stat-icon--primary">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -15,7 +15,7 @@
     
     <div class="stat-divider"></div>
     
-    <div class="stat-item fade-in-up stagger-2">
+    <div class="stat-item">
       <div class="stat-icon stat-icon--success">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
@@ -29,7 +29,7 @@
     
     <div class="stat-divider"></div>
     
-    <div class="stat-item fade-in-up stagger-3">
+    <div class="stat-item">
       <div class="stat-icon stat-icon--warning">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -96,6 +96,8 @@ const roi = computed(() => {
   align-items: center;
   gap: var(--spacing-md);
   flex: 1;
+  opacity: 1;
+  animation: fadeInUp var(--transition-slow) ease-out;
 }
 
 .stat-icon {
