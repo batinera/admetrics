@@ -103,7 +103,11 @@ Dashboard moderna e completa para visualização de métricas do Facebook Ads Ma
 - [x] CONTRIBUTING.md para contribuidores
 - [x] .env.example para configuração
 
-## Estrutura Final
+## Repositório da API
+
+O backend Fastify vive no repositório **admetrics-back** (Postgres, auth, integrações Meta). Em desenvolvimento, a API corre em `http://localhost:3001` e o Vite deste projeto faz proxy para esses paths.
+
+## Estrutura Final (frontend)
 
 ```
 admetrics/
@@ -182,7 +186,9 @@ admetrics/
 ## Como Usar
 
 ```bash
-# Desenvolvimento
+# Desenvolvimento (com API real: noutro terminal, no repo admetrics-back)
+# npm install && npm run migrate && npm run dev  → API :3001
+
 npm install
 npm run dev
 # Abrir http://localhost:5173
@@ -206,11 +212,9 @@ npm run preview
    - Exportação em PDF
    - Dashboard customizável
 
-3. **Backend**
-   - API para persistência
-   - Sistema de autenticação
-   - Cache de dados
-   - Agendamento de relatórios
+3. **Backend** (repo **admetrics-back**)
+   - API Fastify + Postgres já disponível nesse repositório
+   - Evoluções: cache, agendamento de relatórios, etc.
 
 ## Design Highlights
 

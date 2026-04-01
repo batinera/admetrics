@@ -16,6 +16,21 @@ npm run build
 npm run preview
 ```
 
+## API (repositório `admetrics-back`)
+
+O backend não está neste repo. Para desenvolvimento com dados reais:
+
+```bash
+# Noutro diretório / clone do admetrics-back
+cd /caminho/para/admetrics-back
+cp .env.example .env   # editar DATABASE_URL, JWT_SECRET, ENCRYPTION_KEY, …
+npm install
+npm run migrate
+npm run dev            # escuta em http://localhost:3001
+```
+
+Com a API a correr, `npm run dev` neste front usa o proxy do Vite (`vite.config.js`) para `/auth`, `/integrations`, `/api` e `/health`.
+
 ## Limpeza e Manutenção
 
 ```bash

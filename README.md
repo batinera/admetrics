@@ -68,6 +68,14 @@ npm run build
 npm run preview
 ```
 
+### Backend (API)
+
+A API Fastify está no repositório separado **admetrics-back** (irmão deste projeto). Para dados reais e auth:
+
+1. Clona/configura **admetrics-back**, define `.env` (Postgres, `JWT_SECRET`, `ENCRYPTION_KEY`, etc.) e corre `npm run migrate` e `npm run dev` (porta `3001`).
+2. Neste front, mantém `VITE_API_BASE_URL` vazio em desenvolvimento: o [vite.config.js](vite.config.js) faz proxy para `localhost:3001`.
+3. Em produção, define `VITE_API_BASE_URL` com a URL pública da API (sem barra final). No backend, `FRONTEND_URL` e `PUBLIC_API_URL` devem corresponder ao front e à API expostos.
+
 ## 📸 Screenshots
 
 ### Dashboard Principal
@@ -142,7 +150,7 @@ src/
 
 - [ ] Dashboard customizável
 - [ ] Múltiplas contas
-- [ ] Backend completo
+- [x] Backend em repositório separado (**admetrics-back**)
 - [ ] Relatórios agendados
 
 ## 🤝 Contribuindo

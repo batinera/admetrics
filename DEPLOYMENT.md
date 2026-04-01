@@ -138,15 +138,26 @@ server {
 
 ## Variáveis de Ambiente
 
-Para produção, configure as variáveis em `.env.production`:
+### Frontend (este repositório)
+
+Configure no painel do host (ex. Vercel) ou em `.env.production`:
 
 ```env
-VITE_FB_APP_ID=seu_app_id
-VITE_FB_APP_SECRET=seu_app_secret
-VITE_FB_ACCESS_TOKEN=seu_access_token
-VITE_API_BASE_URL=https://graph.facebook.com/v19.0
-VITE_ENV=production
+# Modo só mock, sem chamar API
+# VITE_USE_MOCK=true
+
+# URL pública da API AdMetrics (repo admetrics-back), sem barra final
+VITE_API_BASE_URL=https://api.seudominio.com
+
+# Opcional: mock desligado para usar a API
+VITE_USE_MOCK=false
 ```
+
+Em desenvolvimento local, podes deixar `VITE_API_BASE_URL` vazio e correr a API em `localhost:3001` (proxy no `vite.config.js`).
+
+### Backend (`admetrics-back`)
+
+No serviço onde a API está deployed, define pelo menos `DATABASE_URL`, `JWT_SECRET`, `ENCRYPTION_KEY`, `FRONTEND_URL` (URL do front para CORS), `PUBLIC_API_URL` (URL desta API, usada no OAuth Meta). Ver `.env.example` nesse repositório.
 
 ## Otimizações de Produção
 
