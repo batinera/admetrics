@@ -17,7 +17,7 @@
           </div>
           <div class="logo-text">
             <h1>AdMetrics</h1>
-            <span class="subtitle">Facebook Ads Dashboard</span>
+            <span class="subtitle">Painel de anúncios</span>
           </div>
         </div>
       </div>

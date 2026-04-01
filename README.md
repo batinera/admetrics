@@ -74,7 +74,11 @@ A API Fastify está no repositório separado **admetrics-back** (irmão deste pr
 
 1. Clona/configura **admetrics-back**, define `.env` (Postgres, `JWT_SECRET`, `ENCRYPTION_KEY`, etc.) e corre `npm run migrate` e `npm run dev` (porta `3001`).
 2. Neste front, mantém `VITE_API_BASE_URL` vazio em desenvolvimento: o [vite.config.js](vite.config.js) faz proxy para `localhost:3001`.
-3. Em produção, define `VITE_API_BASE_URL` com a URL pública da API (sem barra final). No backend, `FRONTEND_URL` e `PUBLIC_API_URL` devem corresponder ao front e à API expostos.
+3. Em produção, define `VITE_API_BASE_URL` com a URL pública da API (sem barra final). No backend, `FRONTEND_URL` deve ser a origem exata do front (ex. `https://admetrics-eight.vercel.app`); na API no Render, `PUBLIC_API_URL` pode ficar vazio — usa-se `RENDER_EXTERNAL_URL`.
+
+**Vercel (projeto `admetrics`):** em *Settings → Environment Variables*, produção deve incluir `VITE_API_BASE_URL` (ex. `https://admetrics-api.onrender.com` após o Blueprint no Render) e `VITE_USE_MOCK=false`; faz redeploy para aplicar variáveis ao build.
+
+**Meta OAuth:** em *Valid OAuth Redirect URIs*, adiciona `https://<teu-host-api>/integrations/meta/callback` (o mesmo host que a API expõe).
 
 ## 📸 Screenshots
 

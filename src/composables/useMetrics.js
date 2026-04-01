@@ -1,10 +1,26 @@
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
+import { apiUrl } from "../utils/apiBase";
 import {
   mockCampaigns,
   getOverallMetrics,
   getTimeSeriesData,
   getMetricsForCampaigns,
 } from "../data/mockData";
+
+const useMock = import.meta.env.VITE_USE_MOCK === "true";
+
+function getStoredIntegrationId() {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("admetrics_integration_id");
+}
+
+export function setActiveIntegrationId(id) {
+  if (id) {
+    localStorage.setItem("admetrics_integration_id", id);
+  } else {
+    localStorage.removeItem("admetrics_integration_id");
+  }
+}
 
 export function useMetrics() {
   const metrics = ref(null);
@@ -16,45 +32,80 @@ export function useMetrics() {
   const selectedCampaigns = ref([]);
   const dateRange = ref(null);
 
+  const integrationId = ref(getStoredIntegrationId());
+
+  const allCampaigns = computed(() => {
+    if (useMock) {
+      return mockCampaigns;
+    }
+    return campaigns.value;
+  });
+
+  async function fetchDashboardFromApi(period) {
+    const id = integrationId.value || getStoredIntegrationId();
+    if (!id) {
+      throw new Error("Nenhuma integração selecionada.");
+    }
+    const params = new URLSearchParams({
+      integrationId: id,
+      period: String(period),
+    });
+    if (selectedCampaigns.value.length > 0) {
+      params.set("campaignIds", selectedCampaigns.value.join(","));
+    }
+    if (dateRange.value?.start && dateRange.value?.end) {
+      params.set("dateRangeStart", dateRange.value.start);
+      params.set("dateRangeEnd", dateRange.value.end);
+    }
+    const r = await fetch(apiUrl(`/api/dashboard?${params}`), {
+      credentials: "include",
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      throw new Error(data.error || `Erro ${r.status}`);
+    }
+    return data;
+  }
+
   const loadData = async (period = selectedPeriod.value) => {
-    console.log("loadData called, period:", period);
     isLoading.value = true;
     error.value = null;
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      if (selectedCampaigns.value.length > 0 || dateRange.value) {
-        const filteredData = getMetricsForCampaigns(
-          selectedCampaigns.value,
-          dateRange.value,
-        );
-        metrics.value = filteredData;
-        timeSeriesData.value = filteredData.timeSeriesData || [];
-        campaigns.value = filteredData.campaigns || [];
-      } else {
-        metrics.value = getOverallMetrics();
-        timeSeriesData.value = getTimeSeriesData("results", parseInt(period));
-        campaigns.value = mockCampaigns;
+      if (useMock) {
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        if (selectedCampaigns.value.length > 0 || dateRange.value) {
+          const filteredData = getMetricsForCampaigns(
+            selectedCampaigns.value,
+            dateRange.value,
+          );
+          metrics.value = filteredData;
+          timeSeriesData.value = filteredData.timeSeriesData || [];
+          campaigns.value = filteredData.campaigns || [];
+        } else {
+          metrics.value = getOverallMetrics();
+          timeSeriesData.value = getTimeSeriesData(
+            "results",
+            parseInt(period, 10),
+          );
+          campaigns.value = mockCampaigns;
+        }
+        return;
       }
 
-      console.log("Data loaded successfully:", {
-        metrics: metrics.value,
-        timeSeriesDataLength: timeSeriesData.value.length,
-        campaignsCount: campaigns.value.length,
-      });
+      const data = await fetchDashboardFromApi(period);
+      metrics.value = data.metrics;
+      timeSeriesData.value = data.timeSeriesData || [];
+      campaigns.value = data.campaigns || [];
     } catch (e) {
-      error.value = e.message;
+      error.value = e.message || "Erro ao carregar dados";
       console.error("Error loading metrics:", e);
     } finally {
       isLoading.value = false;
-      console.log("Loading finished, isLoading:", isLoading.value);
     }
   };
 
-  const refreshData = () => {
-    return loadData(selectedPeriod.value);
-  };
+  const refreshData = () => loadData(selectedPeriod.value);
 
   const setPeriod = (period) => {
     selectedPeriod.value = period;
@@ -69,6 +120,10 @@ export function useMetrics() {
   const setDateRange = (range) => {
     dateRange.value = range;
     return loadData(selectedPeriod.value);
+  };
+
+  const syncIntegrationId = () => {
+    integrationId.value = getStoredIntegrationId();
   };
 
   const activeCampaignsCount = computed(() => {
@@ -87,8 +142,6 @@ export function useMetrics() {
       .reduce((sum, c) => sum + c.totals.spend, 0);
   });
 
-  const allCampaigns = computed(() => mockCampaigns);
-
   return {
     metrics,
     timeSeriesData,
@@ -98,12 +151,14 @@ export function useMetrics() {
     selectedPeriod,
     selectedCampaigns,
     dateRange,
+    integrationId,
     allCampaigns,
     loadData,
     refreshData,
     setPeriod,
     setSelectedCampaigns,
     setDateRange,
+    syncIntegrationId,
     activeCampaignsCount,
     totalBudget,
     totalSpent,

@@ -6,6 +6,12 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false,
+    proxy: {
+      "/auth": { target: "http://localhost:3001", changeOrigin: true },
+      "/integrations": { target: "http://localhost:3001", changeOrigin: true },
+      "/api": { target: "http://localhost:3001", changeOrigin: true },
+      "/health": { target: "http://localhost:3001", changeOrigin: true },
+    },
   },
   build: {
     target: "esnext",
