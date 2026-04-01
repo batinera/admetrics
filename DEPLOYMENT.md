@@ -204,7 +204,8 @@ Adicione analytics e monitoramento:
 
 - [ ] Build funciona sem erros (`npm run build`)
 - [ ] Preview do build funciona (`npm run preview`)
-- [ ] Variáveis de ambiente configuradas
+- [ ] Variáveis de ambiente configuradas (`VITE_API_BASE_URL` aponta para a API em **admetrics-back** se não usares mock)
+- [ ] API em produção com `FRONTEND_URL` e `PUBLIC_API_URL` corretos
 - [ ] Testes em diferentes navegadores
 - [ ] Testes de responsividade
 - [ ] Verificação de acessibilidade
